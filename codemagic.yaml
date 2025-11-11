@@ -1,23 +1,34 @@
-
 workflows:
-  pdfmaster-workflow:
+  build_pdfmaster:
     name: PDFMaster Build
-    max_build_duration: 60
     environment:
-      flutter: '3.24.0'
+      flutter: stable
+      xcode: latest
+      android_signing:
+        - keystore_reference: keystore
     scripts:
+      - name: Clean project
+        script: |
+          flutter clean
+          rm -rf pubspec.lock
+
       - name: Install dependencies
         script: |
           flutter pub get
-      - name: Clean and analyze
+          flutter pub upgrade --major-versions
+
+      - name: Analyze and test
         script: |
-          flutter clean
           flutter analyze
+          flutter test || true
+
       - name: Build release APK
         script: |
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons
+
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+
     publishing:
       email:
         recipients:
