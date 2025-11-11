@@ -4,8 +4,6 @@ workflows:
     environment:
       flutter: stable
       xcode: latest
-      android_signing:
-        - keystore_reference: keystore
     scripts:
       - name: Clean project
         script: |
